@@ -1,16 +1,14 @@
-# Compiled class file
+# ============================================
+# Community Emergency Network - .gitignore
+# Stack: Spring Boot + React Native + React + Docker
+# ============================================
+
+# ===== Java / Spring Boot =====
+
+# Compiled class files
 *.class
 
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
+# Package files
 *.jar
 *.war
 *.nar
@@ -19,6 +17,252 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+gradle-app.setting
+
+# Spring Boot local configs
+application-local.properties
+application-dev.properties
+
+# JVM crash logs
 hs_err_pid*
 replay_pid*
+
+# ===== STS / Eclipse =====
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+# ===== IntelliJ IDEA =====
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.idea_modules/
+
+# ===== VS Code =====
+.vscode/
+*.code-workspace
+.history/
+
+# ===== React Native / Mobile App =====
+
+# Node modules
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# React Native specific
+*.mobileprovision
+*.xcconfig
+
+# ===== iOS =====
+ios/build/
+ios/Pods/
+*.xcworkspace
+*.xcodeproj
+!*.xcodeproj/project.pbxproj
+
+# ===== Android =====
+android/app/build/
+android/app/.project
+android/app/.classpath
+android/captures/
+android/.gradle/
+android/local.properties
+android/*.iml
+android/.idea/
+android/build/
+android/app/debug.keystore
+android/app/google-services.json
+android/app/src/debug/
+android/app/src/release/
+
+# ===== Expo =====
+.expo/
+web-build/
+expo-env.d.ts
+
+# ===== React Admin Dashboard =====
+
+# Build output
+admin-dashboard/build/
+admin-dashboard/dist/
+admin-dashboard/.next/
+admin-dashboard/out/
+
+# Environment variables
+admin-dashboard/.env
+admin-dashboard/.env.local
+admin-dashboard/.env.development.local
+admin-dashboard/.env.test.local
+admin-dashboard/.env.production.local
+
+# ===== Environment & Secrets =====
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Secrets
+application-secrets.properties
+secrets.yml
+secrets.json
+*.key
+*.pem
+*.crt
+*.p12
+google-services.json
+GoogleService-Info.plist
+firebase-admin-sdk.json
+twilio-credentials.json
+
+# ===== Database =====
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
+*.h2.db
+*.mv.db
+*.trace.db
+*.log.db
+
+# PostgreSQL local data
+postgres-data/
+pgdata/
+
+# Flyway migration history
+flyway-schema-history.log
+
+# ===== Docker =====
+
+# Docker volumes
+volumes/
+docker/volumes/
+*.volume
+
+# Docker override file
+docker-compose.override.yml
+
+# Container logs
+*.container.log
+
+# ===== Logs & Temporary Files =====
+
+logs/
+*.log
+*.log.gz
+
+*.tmp
+*.temp
+*.cache
+.cache/
+tmp/
+temp/
+
+# ===== OS Metadata =====
+
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor temp files
+*.swp
+*.swo
+*~
+
+# ===== Build & Test Outputs =====
+
+coverage/
+.nyc_output/
+jacoco.exec
+test-output/
+surefire-reports/
+failsafe-reports/
+
+# Performance metrics
+benchmark-results/
+load-test/results/
+
+# ===== Miscellaneous =====
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Debug files
+*.pid
+*.seed
+*.pid.lock
+
+# Certificate files
+*.pfx
+*.jks
+*.keystore
+*.truststore
+
+# ===== Keep Example Files =====
+
+!.env.example
+!docker-compose.example.yml
+!application-example.properties
+
+# ===== Project Specific =====
+
+# Uploaded media
+/uploads/
+/media/
+/profile-photos/
+/emergency-images/
+
+# Generated docs
+docs/generated/
+apidocs/
+
+# Local configuration
+local-config/
+*.local.yml
+*.local.properties
+
+# Mobile build artifacts
+*.apk
+*.aab
+*.ipa
+
+mobile-app/app/release/
+mobile-app/app/debug/
+
+# Log aggregation archives
+logs.zip
+*.log.zip
