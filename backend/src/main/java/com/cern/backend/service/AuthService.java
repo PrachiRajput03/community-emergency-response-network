@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.cern.backend.dto.LoginRequest;
+import com.cern.backend.security.JwtService;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +15,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public String register(RegisterRequest request) {
 
@@ -50,6 +52,6 @@ public class AuthService {
         return "Invalid password";
     }
 
-    return "Login successful";
+    return jwtService.generateToken(user.getEmail());
 }
 }
