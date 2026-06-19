@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import com.cern.backend.enums.EmergencyStatus;
+import com.cern.backend.entity.User;
+import com.cern.backend.repository.UserRepository;
 
 import java.time.LocalDateTime;
 
@@ -15,9 +17,33 @@ import java.time.LocalDateTime;
 public class EmergencyService {
 
     private final EmergencyRepository emergencyRepository;
+    private final UserRepository userRepository;
 
-    public String createEmergency(CreateEmergencyRequest request) {
+    public String acceptEmergency(Long emergencyId, String email) {
 
+    Emergency emergency = emergencyRepository
+            .findById(emergencyId)
+            .orElseThrow(() ->
+                    new RuntimeException("Emergency not found"));
+
+    User volunteer = userRepository
+            .findByEmail(email)
+            .orElseThrow(() ->
+                    new RuntimeException("User not found"));
+
+    emergency.setAssignedVolunteer(volunteer);
+    emergency.setStatus(EmergencyStatus.IN_PROGRESS);
+
+    emergencyRepository.save(emergency);
+
+    return "Emergency accepted successfully";
+}
+
+    public String createEmergency(CreateEmergencyRequest request, String email) {
+
+        User user = userRepository.findByEmail(email)
+        .orElseThrow(() ->
+                new RuntimeException("User not found"));
         Emergency emergency = Emergency.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
@@ -25,10 +51,10 @@ public class EmergencyService {
                 .severity(request.getSeverity())
                 .status(EmergencyStatus.OPEN)
                 .createdAt(LocalDateTime.now())
+                .createdBy(user)
                 .build();
 
         emergencyRepository.save(emergency);
-
         return "Emergency created successfully";
 
 
