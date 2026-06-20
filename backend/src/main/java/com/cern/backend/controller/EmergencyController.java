@@ -5,8 +5,13 @@ import com.cern.backend.service.EmergencyService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.cern.backend.entity.Emergency;
+import com.cern.backend.enums.EmergencySeverity;
+import com.cern.backend.enums.EmergencyStatus;
+
 import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -63,5 +68,28 @@ public String acceptEmergency(
             id,
             email
     );
+}
+
+@PostMapping("/{id}/resolve")
+public ResponseEntity<String> resolveEmergency(
+        @PathVariable Long id) {
+
+    return ResponseEntity.ok(
+            emergencyService.resolveEmergency(id)
+    );
+}
+
+@GetMapping("/status/{status}")
+public List<Emergency> getByStatus(
+        @PathVariable EmergencyStatus status) {
+
+    return emergencyService.getEmergenciesByStatus(status);
+}
+
+@GetMapping("/severity/{severity}")
+public List<Emergency> getBySeverity(
+        @PathVariable EmergencySeverity severity) {
+
+    return emergencyService.getEmergenciesBySeverity(severity);
 }
 }
