@@ -21,17 +21,13 @@ public class EmergencyService {
     private final EmergencyRepository emergencyRepository;
     private final UserRepository userRepository;
 
-    public String createEmergency(
-            CreateEmergencyRequest request,
-            String email) {
+    public String createEmergency(CreateEmergencyRequest request, String email) {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (user.getRole() != UserRole.CITIZEN) {
-            throw new RuntimeException(
-                    "Only citizens can create emergencies");
+            throw new RuntimeException("Only citizens can create emergencies");
         }
 
         Emergency emergency = Emergency.builder()
@@ -53,13 +49,15 @@ public class EmergencyService {
 
         Emergency emergency = emergencyRepository
                 .findById(emergencyId)
-                .orElseThrow(() ->
-                        new RuntimeException("Emergency not found"));
+                .orElseThrow(() -> new RuntimeException("Emergency not found"));
 
         User volunteer = userRepository
                 .findByEmail(email)
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (volunteer.getRole() != UserRole.VOLUNTEER) {
+            throw new RuntimeException("Only volunteers can accept emergencies");
+        }
 
         emergency.setAssignedVolunteer(volunteer);
         emergency.setStatus(EmergencyStatus.IN_PROGRESS);
@@ -69,39 +67,19 @@ public class EmergencyService {
         return "Emergency accepted successfully";
     }
 
-    public List<Emergency> getAllEmergencies() {
-        return emergencyRepository.findAll();
-    }
-
-    public Emergency getEmergencyById(Long id) {
-
-        return emergencyRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Emergency not found"));
-    }
-
-    public String updateStatus(Long id, String status) {
+    public String resolveEmergency(Long id, String email) {
 
         Emergency emergency = emergencyRepository
                 .findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Emergency not found"));
+                .orElseThrow(() -> new RuntimeException("Emergency not found"));
 
-        emergency.setStatus(
-                EmergencyStatus.valueOf(status)
-        );
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        emergencyRepository.save(emergency);
-
-        return "Status updated successfully";
-    }
-
-    public String resolveEmergency(Long id) {
-
-        Emergency emergency = emergencyRepository
-                .findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Emergency not found"));
+        if (user.getRole() != UserRole.VOLUNTEER &&
+                user.getRole() != UserRole.ADMIN) {
+            throw new RuntimeException("Only volunteers or admins can resolve emergencies");
+        }
 
         emergency.setStatus(EmergencyStatus.RESOLVED);
 
@@ -110,15 +88,53 @@ public class EmergencyService {
         return "Emergency resolved successfully";
     }
 
-    public List<Emergency> getEmergenciesByStatus(
-        EmergencyStatus status) {
+    public List<Emergency> getAllEmergencies() {
+        return emergencyRepository.findAll();
+    }
 
-    return emergencyRepository.findByStatus(status);
+    public Emergency getEmergencyById(Long id) {
+        return emergencyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Emergency not found"));
+    }
+
+    public String updateStatus(Long id, String status) {
+
+        Emergency emergency = emergencyRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Emergency not found"));
+
+        emergency.setStatus(EmergencyStatus.valueOf(status));
+
+        emergencyRepository.save(emergency);
+
+        return "Status updated successfully";
+    }
+
+    public List<Emergency> getEmergenciesByStatus(EmergencyStatus status) {
+        return emergencyRepository.findByStatus(status);
+    }
+
+    public List<Emergency> getEmergenciesBySeverity(EmergencySeverity severity) {
+        return emergencyRepository.findBySeverity(severity);
+    }
+
+    public List<Emergency> getMyEmergencies(String email) {
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new RuntimeException("User not found"));
+
+    return emergencyRepository.findByCreatedBy(user);
 }
 
-public List<Emergency> getEmergenciesBySeverity(
-        EmergencySeverity severity) {
+public List<Emergency> getMyAssignedEmergencies(
+        String email) {
 
-    return emergencyRepository.findBySeverity(severity);
+    User volunteer = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new RuntimeException("User not found"));
+
+    return emergencyRepository
+            .findByAssignedVolunteer(volunteer);
 }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.cern.backend.enums.EmergencySeverity;
 import com.cern.backend.enums.EmergencyStatus;
+import com.cern.backend.entity.User;
 
 public interface EmergencyRepository
         extends JpaRepository<Emergency, Long> {
@@ -14,4 +15,6 @@ public interface EmergencyRepository
                 long countByStatus(EmergencyStatus status);
                 List<Emergency> findByStatus(EmergencyStatus status);
                 List<Emergency> findBySeverity(EmergencySeverity severity);
+                List<Emergency> findByCreatedBy(User user);
+                List<Emergency> findByAssignedVolunteer(User user);
 }
