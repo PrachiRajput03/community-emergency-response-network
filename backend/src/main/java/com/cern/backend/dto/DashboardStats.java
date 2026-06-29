@@ -3,6 +3,8 @@ package com.cern.backend.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 @AllArgsConstructor
 public class DashboardStats {
@@ -12,4 +14,6 @@ public class DashboardStats {
     private long inProgressEmergencies;
     private long resolvedEmergencies;
     private long totalVolunteers;
+    private long totalCitizens;
+    private Map<String, Long> severityCounts;
 }
