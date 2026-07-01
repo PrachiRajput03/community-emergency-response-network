@@ -15,12 +15,23 @@ import api from './api'
  */
 
 // CITIZEN: create a new emergency
-export const createEmergency = async ({ title, type, severity, description, location, address }) => {
+export const createEmergency = async ({
+  title,
+  type,
+  severity,
+  description,
+  location,
+  address,
+  latitude,
+  longitude,
+}) => {
   const response = await api.post('/emergencies', {
     title: title || type || 'Emergency Report',
     description,
     location: location || address || 'Location not provided',
     severity,
+    latitude,
+    longitude,
   })
 
   return response.data

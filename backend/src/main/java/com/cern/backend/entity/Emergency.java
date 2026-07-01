@@ -26,6 +26,9 @@ public class Emergency {
     private String description;
 
     private String location;
+    private Double latitude;
+
+    private Double longitude;
 
     @Enumerated(EnumType.STRING)
     private EmergencySeverity severity; 

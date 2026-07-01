@@ -13,4 +13,7 @@ public class CreateEmergencyRequest {
     private String location;
 
     private EmergencySeverity severity;
+    private Double latitude;
+
+    private Double longitude;
 }
