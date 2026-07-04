@@ -16,4 +16,5 @@ public class DashboardStats {
     private long totalVolunteers;
     private long totalCitizens;
     private Map<String, Long> severityCounts;
+    private double avgResponseTime;
 }

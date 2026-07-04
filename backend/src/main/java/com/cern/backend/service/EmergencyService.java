@@ -20,6 +20,7 @@ public class EmergencyService {
 
     private final EmergencyRepository emergencyRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public String createEmergency(CreateEmergencyRequest request, String email) {
 
@@ -42,7 +43,9 @@ public class EmergencyService {
                 .createdBy(user)
                 .build();
 
-        emergencyRepository.save(emergency);
+        Emergency savedEmergency = emergencyRepository.save(emergency);
+
+        notificationService.notifyNewEmergency(savedEmergency);
 
         return "Emergency created successfully";
     }
@@ -63,6 +66,7 @@ public class EmergencyService {
 
         emergency.setAssignedVolunteer(volunteer);
         emergency.setStatus(EmergencyStatus.IN_PROGRESS);
+        emergency.setAcceptedAt(LocalDateTime.now());
 
         emergencyRepository.save(emergency);
 
@@ -84,6 +88,7 @@ public class EmergencyService {
         }
 
         emergency.setStatus(EmergencyStatus.RESOLVED);
+        emergency.setResolvedAt(LocalDateTime.now());
 
         emergencyRepository.save(emergency);
 

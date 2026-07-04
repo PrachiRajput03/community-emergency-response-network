@@ -18,4 +18,5 @@ public interface EmergencyRepository
                 List<Emergency> findByCreatedBy(User user);
                 List<Emergency> findByAssignedVolunteer(User user);
                 long countBySeverity(EmergencySeverity severity);
+                List<Emergency> findByAcceptedAtIsNotNull();
 }

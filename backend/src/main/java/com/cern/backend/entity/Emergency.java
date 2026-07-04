@@ -37,6 +37,9 @@ public class Emergency {
     private EmergencyStatus status;
 
     private LocalDateTime createdAt;
+    private LocalDateTime acceptedAt;
+
+    private LocalDateTime resolvedAt;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
