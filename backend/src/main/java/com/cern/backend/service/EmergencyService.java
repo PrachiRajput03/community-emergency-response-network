@@ -37,6 +37,7 @@ public class EmergencyService {
                 .location(request.getLocation())
                 .latitude(request.getLatitude())
                 .longitude(request.getLongitude())
+                .category(request.getCategory())
                 .severity(request.getSeverity())
                 .status(EmergencyStatus.OPEN)
                 .createdAt(LocalDateTime.now())

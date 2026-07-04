@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import com.cern.backend.enums.EmergencySeverity;
 import com.cern.backend.enums.EmergencyStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.cern.backend.enums.EmergencyCategory;
 
 @Entity
 @Table(name = "emergencies")
@@ -30,6 +31,9 @@ public class Emergency {
 
     private Double longitude;
 
+    @Enumerated(EnumType.STRING)
+    private EmergencyCategory category;
+    
     @Enumerated(EnumType.STRING)
     private EmergencySeverity severity; 
 
