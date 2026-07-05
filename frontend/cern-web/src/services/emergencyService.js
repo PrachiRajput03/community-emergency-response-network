@@ -18,6 +18,7 @@ import api from './api'
 export const createEmergency = async ({
   title,
   type,
+  category,
   severity,
   description,
   location,
@@ -27,6 +28,7 @@ export const createEmergency = async ({
 }) => {
   const response = await api.post('/emergencies', {
     title: title || type || 'Emergency Report',
+    category,
     description,
     location: location || address || 'Location not provided',
     severity,

@@ -13,14 +13,25 @@ const SEVERITY_OPTIONS = [
   { value: SEVERITY.CRITICAL, label: 'Critical', color: 'border-brand-red text-brand-red2' },
 ]
 
+const CATEGORY_OPTIONS = [
+  { value: 'MEDICAL', label: 'Medical', icon: '🚑' },
+  { value: 'ROAD_ACCIDENT', label: 'Road Accident', icon: '🚗' },
+  { value: 'FIRE', label: 'Fire', icon: '🔥' },
+  { value: 'WOMEN_SAFETY', label: 'Women Safety', icon: '👮' },
+  { value: 'CRIME', label: 'Crime', icon: '🚨' },
+  { value: 'GENERAL_HELP', label: 'General Help', icon: '🦺' },
+  { value: 'NATURAL_DISASTER', label: 'Natural Disaster', icon: '🌪️' },
+]
+
 export default function CreateEmergencyPage() {
   const navigate = useNavigate()
   const [form, setForm] = useState({
-    type: '',
-    severity: SEVERITY.MEDIUM,
-    description: '',
-    address: '',
-  })
+  type: '',
+  category: '',
+  severity: SEVERITY.MEDIUM,
+  description: '',
+  address: '',
+})
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -62,6 +73,10 @@ export default function CreateEmergencyPage() {
       setError('Please select an emergency type.')
       return
     }
+    if (!form.category) {
+      setError('Please select an emergency category.')
+      return
+    } 
 
     setLoading(true)
 
@@ -133,6 +148,31 @@ export default function CreateEmergencyPage() {
             </div>
 
             <div>
+              <label className="label-text">Emergency Category</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
+                   {CATEGORY_OPTIONS.map((c) => (
+                    <button
+                    key={c.value}
+                    type="button"
+                    onClick={() =>
+                    setForm((f) => ({ ...f, category: c.value }))
+                     }
+                    className={`flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl border-2 transition-all ${
+                    form.category === c.value
+                    ? 'border-brand-red bg-card2'
+                      : 'border-line bg-bg3 hover:border-line2'
+                      }`}
+                 >
+                  <span className="text-xl">{c.icon}</span>
+                   <span className="text-[10px] font-medium text-ink2 text-center leading-tight">
+                   {c.label}
+                    </span>
+                    </button>
+                  ))}
+                   </div>
+                </div>
+
+            <div>
               <label className="label-text">Severity Level</label>
               <div className="grid grid-cols-4 gap-2 mt-2">
                 {SEVERITY_OPTIONS.map((s) => (
@@ -153,6 +193,19 @@ export default function CreateEmergencyPage() {
                 ))}
               </div>
             </div>
+
+            <div>
+  <label className="label-text">Emergency Title</label>
+
+  <input
+    type="text"
+    required
+    className="input-field"
+    placeholder="e.g. Woman being followed near bus stop"
+    value={form.title}
+    onChange={update('title')}
+  />
+</div>
 
             <div>
               <label className="label-text">Description</label>

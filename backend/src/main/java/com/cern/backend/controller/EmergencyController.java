@@ -100,4 +100,24 @@ public List<Emergency> getMyAssignedEmergencies(
     return emergencyService
             .getMyAssignedEmergencies(email);
 }
+
+@GetMapping("/medical")
+public List<Emergency> getMedicalEmergencies() {
+    return emergencyService.getMedicalEmergencies();
+}
+
+@GetMapping("/fire")
+public List<Emergency> getFireEmergencies() {
+    return emergencyService.getFireEmergencies();
+}
+
+@GetMapping("/police")
+public List<Emergency> getPoliceEmergencies() {
+    return emergencyService.getPoliceEmergencies();
+}
+
+@GetMapping("/volunteer")
+public List<Emergency> getVolunteerEmergencies() {
+    return emergencyService.getVolunteerEmergencies();
+}
 }

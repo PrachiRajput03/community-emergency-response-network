@@ -1,4 +1,5 @@
 package com.cern.backend.service;
+import java.util.Arrays;
 
 import com.cern.backend.dto.CreateEmergencyRequest;
 import com.cern.backend.entity.Emergency;
@@ -10,6 +11,7 @@ import com.cern.backend.repository.EmergencyRepository;
 import com.cern.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.cern.backend.enums.EmergencyCategory;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -144,5 +146,40 @@ public List<Emergency> getMyAssignedEmergencies(
 
     return emergencyRepository
             .findByAssignedVolunteer(volunteer);
+
+
+}
+
+public List<Emergency> getMedicalEmergencies() {
+    return emergencyRepository.findByCategoryIn(
+            Arrays.asList(
+                    EmergencyCategory.MEDICAL,
+                    EmergencyCategory.ROAD_ACCIDENT
+            )
+    );
+}
+
+public List<Emergency> getFireEmergencies() {
+    return emergencyRepository.findByCategory(
+            EmergencyCategory.FIRE
+    );
+}
+
+public List<Emergency> getPoliceEmergencies() {
+    return emergencyRepository.findByCategoryIn(
+            Arrays.asList(
+                    EmergencyCategory.WOMEN_SAFETY,
+                    EmergencyCategory.CRIME
+            )
+    );
+}
+
+public List<Emergency> getVolunteerEmergencies() {
+    return emergencyRepository.findByCategoryIn(
+            Arrays.asList(
+                    EmergencyCategory.GENERAL_HELP,
+                    EmergencyCategory.NATURAL_DISASTER
+            )
+    );
 }
 }
