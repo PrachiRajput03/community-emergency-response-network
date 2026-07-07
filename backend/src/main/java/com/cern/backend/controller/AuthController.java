@@ -1,10 +1,11 @@
 package com.cern.backend.controller;
 
+import com.cern.backend.dto.LoginRequest;
+import com.cern.backend.dto.LoginResponse;
 import com.cern.backend.dto.RegisterRequest;
 import com.cern.backend.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import com.cern.backend.dto.LoginRequest;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -19,7 +20,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest request) {
-    return authService.login(request);
-}
+    public LoginResponse login(@RequestBody LoginRequest request) {
+        return authService.login(request);
+    }
 }

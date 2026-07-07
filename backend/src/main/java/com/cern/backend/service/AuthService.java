@@ -1,13 +1,15 @@
 package com.cern.backend.service;
 
+import com.cern.backend.dto.LoginRequest;
+import com.cern.backend.dto.LoginResponse;
 import com.cern.backend.dto.RegisterRequest;
 import com.cern.backend.entity.User;
+import com.cern.backend.entity.UserRole;
 import com.cern.backend.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import com.cern.backend.dto.LoginRequest;
 import com.cern.backend.security.JwtService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,11 @@ public class AuthService {
             return "Email already exists";
         }
 
+        if (request.getRole() != UserRole.CITIZEN &&
+                request.getRole() != UserRole.VOLUNTEER) {
+            return "Only citizens and volunteers can self-register";
+        }
+
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
@@ -36,22 +43,25 @@ public class AuthService {
         return "User registered successfully";
     }
 
-    public String login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
 
-    User user = userRepository.findByEmail(request.getEmail())
-            .orElse(null);
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    if (user == null) {
-        return "User not found";
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword())) {
+
+            throw new RuntimeException("Invalid password");
+        }
+
+        String token = jwtService.generateToken(user.getEmail());
+
+        return new LoginResponse(
+                token,
+                user.getRole().name(),
+                user.getName(),
+                user.getEmail()
+        );
     }
-
-    if (!passwordEncoder.matches(
-            request.getPassword(),
-            user.getPassword())) {
-
-        return "Invalid password";
-    }
-
-    return jwtService.generateToken(user.getEmail());
-}
 }

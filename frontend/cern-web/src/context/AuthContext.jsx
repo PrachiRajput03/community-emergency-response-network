@@ -22,26 +22,12 @@ export const AuthProvider = ({ children }) => {
       ? data
       : data.token || data.accessToken || data.jwt
 
-  let userRole = 'CITIZEN'
-
-  const email = credentials?.email?.toLowerCase() || ''
-
-  if (email.includes('volunteer')) {
-    userRole = 'VOLUNTEER'
-  }
-
-  if (email.includes('admin')) {
-    userRole = 'ADMIN'
-  }
+  const userRole = data.role
 
   const userInfo = {
-  email: credentials?.email,
-  role: userRole,
-  name: credentials?.email
-    ? credentials.email.split('@')[0]
-        .replaceAll('.', ' ')
-        .replace(/\b\w/g, (c) => c.toUpperCase())
-    : userRole,
+  email: data.email,
+  role: data.role,
+  name: data.name,
 }
 
   localStorage.setItem(TOKEN_KEY, jwt)

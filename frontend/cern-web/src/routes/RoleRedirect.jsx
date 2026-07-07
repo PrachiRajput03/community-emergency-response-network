@@ -4,7 +4,15 @@ import { ROLES } from '../utils/constants'
 
 const HOME_BY_ROLE = {
   [ROLES.CITIZEN]: '/citizen/dashboard',
+
   [ROLES.VOLUNTEER]: '/volunteer/dashboard',
+
+  [ROLES.MEDICAL_RESPONDER]: '/medical/dashboard',
+
+  [ROLES.FIRE_RESPONDER]: '/fire/dashboard',
+
+  [ROLES.POLICE_RESPONDER]: '/police/dashboard',
+
   [ROLES.ADMIN]: '/admin/dashboard',
 }
 
