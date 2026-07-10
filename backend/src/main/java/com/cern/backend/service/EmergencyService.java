@@ -63,8 +63,8 @@ public class EmergencyService {
                 .findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (volunteer.getRole() != UserRole.VOLUNTEER) {
-            throw new RuntimeException("Only volunteers can accept emergencies");
+        if (volunteer.getRole() != UserRole.VOLUNTEER && volunteer.getRole() != UserRole.MEDICAL_RESPONDER && volunteer.getRole() != UserRole.FIRE_RESPONDER && volunteer.getRole() != UserRole.POLICE_RESPONDER) {
+                throw new RuntimeException("Only responders can accept emergencies");
         }
 
         emergency.setAssignedVolunteer(volunteer);
@@ -85,10 +85,9 @@ public class EmergencyService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (user.getRole() != UserRole.VOLUNTEER &&
-                user.getRole() != UserRole.ADMIN) {
-            throw new RuntimeException("Only volunteers or admins can resolve emergencies");
-        }
+        if (user.getRole() != UserRole.VOLUNTEER && user.getRole() != UserRole.MEDICAL_RESPONDER && user.getRole() != UserRole.FIRE_RESPONDER && user.getRole() != UserRole.POLICE_RESPONDER && user.getRole() != UserRole.ADMIN) {
+                throw new RuntimeException("Only responders or admins can resolve emergencies");
+        }               
 
         emergency.setStatus(EmergencyStatus.RESOLVED);
         emergency.setResolvedAt(LocalDateTime.now());
@@ -180,6 +179,18 @@ public List<Emergency> getVolunteerEmergencies() {
                     EmergencyCategory.GENERAL_HELP,
                     EmergencyCategory.NATURAL_DISASTER
             )
+    );
+}
+
+public List<Emergency> getMyActiveMissions(String email) {
+
+    User responder = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new RuntimeException("User not found"));
+
+    return emergencyRepository.findByAssignedVolunteerAndStatus(
+            responder,
+            EmergencyStatus.IN_PROGRESS
     );
 }
 }

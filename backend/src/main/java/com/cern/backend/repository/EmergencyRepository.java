@@ -18,8 +18,19 @@ public interface EmergencyRepository
                 List<Emergency> findBySeverity(EmergencySeverity severity);
                 List<Emergency> findByCreatedBy(User user);
                 List<Emergency> findByAssignedVolunteer(User user);
+                List<Emergency> findByAssignedVolunteerAndStatus(
+                        User user,
+                        EmergencyStatus status
+                );
                 long countBySeverity(EmergencySeverity severity);
                 List<Emergency> findByAcceptedAtIsNotNull();
                 List<Emergency> findByCategory(EmergencyCategory category);
                 List<Emergency> findByCategoryIn(List<EmergencyCategory> categories);
-}
+                long countByCategoryIn(List<EmergencyCategory> categories);
+
+                long countByCategoryInAndStatus(
+                List<EmergencyCategory> categories,
+                EmergencyStatus status
+);
+                
+        }

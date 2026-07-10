@@ -56,21 +56,99 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* User card + logout */}
+            {/* Emergency Hotlines */}
       <div className="border-t border-line pt-4 mt-4">
-        <div className="flex items-center gap-3 px-2 mb-3">
+        <h3 className="text-[11px] uppercase tracking-wider text-ink3 mb-3 px-2">
+          Emergency Hotlines
+        </h3>
+
+        <div className="space-y-2 mb-5">
+
+          <a
+            href="tel:108"
+            className="flex items-center justify-between rounded-xl bg-bg3 px-3 py-2 hover:bg-bg2 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <span>🚑</span>
+              <span className="text-sm text-ink">Ambulance</span>
+            </div>
+
+            <span className="font-semibold text-brand-green">
+              108
+            </span>
+          </a>
+
+          <a
+            href="tel:112"
+            className="flex items-center justify-between rounded-xl bg-bg3 px-3 py-2 hover:bg-bg2 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <span>👮</span>
+              <span className="text-sm text-ink">Police</span>
+            </div>
+
+            <span className="font-semibold text-brand-blue">
+              112
+            </span>
+          </a>
+
+          <a
+            href="tel:101"
+            className="flex items-center justify-between rounded-xl bg-bg3 px-3 py-2 hover:bg-bg2 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <span>🚒</span>
+              <span className="text-sm text-ink">Fire</span>
+            </div>
+
+            <span className="font-semibold text-brand-red">
+              101
+            </span>
+          </a>
+
+          <a
+            href="tel:1091"
+            className="flex items-center justify-between rounded-xl bg-bg3 px-3 py-2 hover:bg-bg2 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <span>🆘</span>
+              <span className="text-sm text-ink">
+                Women Helpline
+              </span>
+            </div>
+
+            <span className="font-semibold text-brand-amber">
+              1091
+            </span>
+          </a>
+
+        </div>
+
+        {/* User card */}
+        <div className="flex items-center gap-3 px-2 mb-3 border-t border-line pt-4">
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-blue to-brand-purple flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
             {initials(user?.name)}
           </div>
+
           <div className="min-w-0">
-            <p className="text-sm font-medium text-ink truncate">{user?.name || 'User'}</p>
-            <p className="text-[11px] text-ink3 capitalize">{role?.toLowerCase()}</p>
+            <p className="text-sm font-medium text-ink truncate">
+              {user?.name || 'User'}
+            </p>
+
+            <p className="text-[11px] text-ink3 capitalize">
+              {role?.toLowerCase().replace('_', ' ')}
+            </p>
           </div>
         </div>
-        <button onClick={logout} className="btn-ghost w-full justify-start px-2">
-          <span>🚪</span> Sign Out
+
+        <button
+          onClick={logout}
+          className="btn-ghost w-full justify-start px-2"
+        >
+          <span>🚪</span>
+          Sign Out
         </button>
-      </div>
+            </div>
     </aside>
   )
 }

@@ -1,3 +1,7 @@
+import {
+  connectEmergencySocket,
+  disconnectEmergencySocket,
+} from '../../services/websocketService'
 import { useEffect, useMemo, useState } from 'react'
 import DashboardLayout from '../../components/DashboardLayout'
 import EmergencyCard from '../../components/EmergencyCard'
@@ -6,6 +10,7 @@ import Spinner from '../../components/Spinner'
 import StatCard from '../../components/StatCard'
 import * as emergencyService from '../../services/emergencyService'
 import { EMERGENCY_STATUS } from '../../utils/constants'
+import EmergencyMap from '../../components/EmergencyMap'
 
 const CONFIG = {
   medical: {
@@ -31,37 +36,60 @@ const CONFIG = {
 export default function ResponderDashboard({ type }) {
   const config = CONFIG[type]
   const [emergencies, setEmergencies] = useState([])
+  const [activeMissions, setActiveMissions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [acceptingId, setAcceptingId] = useState(null)
 
   const loadData = () => {
-    setLoading(true)
-    setError('')
+  setLoading(true)
+  setError('')
 
-    config.fetcher()
-      .then((data) => {
-        setEmergencies(Array.isArray(data) ? data : data?.content || [])
-      })
-      .catch((err) => {
-        setError(err.response?.data?.message || 'Failed to load responder emergencies.')
-      })
-      .finally(() => setLoading(false))
-  }
+  Promise.all([
+    config.fetcher(),
+    emergencyService.getMyActiveMissions(),
+  ])
+    .then(([emergencyData, activeData]) => {
+      setEmergencies(Array.isArray(emergencyData) ? emergencyData : emergencyData?.content || [])
+      setActiveMissions(Array.isArray(activeData) ? activeData : activeData?.content || [])
+    })
+    .catch((err) => {
+      setError(err.response?.data?.message || 'Failed to load responder emergencies.')
+    })
+    .finally(() => setLoading(false))
+}
 
   useEffect(() => {
     loadData()
   }, [type])
+
+  useEffect(() => {
+  connectEmergencySocket((emergency) => {
+
+    // Reload only if this responder should see this emergency
+    if (
+      (type === 'medical' &&
+        ['MEDICAL', 'ROAD_ACCIDENT'].includes(emergency.category)) ||
+
+      (type === 'fire' &&
+        emergency.category === 'FIRE') ||
+
+      (type === 'police' &&
+        ['CRIME', 'WOMEN_SAFETY'].includes(emergency.category))
+    ) {
+      loadData()
+    }
+  })
+
+  return () => disconnectEmergencySocket()
+}, [type])
 
   const openEmergencies = useMemo(
     () => emergencies.filter((e) => e.status === EMERGENCY_STATUS.OPEN),
     [emergencies]
   )
 
-  const activeEmergencies = useMemo(
-    () => emergencies.filter((e) => e.status === EMERGENCY_STATUS.IN_PROGRESS),
-    [emergencies]
-  )
+  const activeEmergencies = activeMissions
 
   const resolvedEmergencies = useMemo(
     () => emergencies.filter((e) => e.status === EMERGENCY_STATUS.RESOLVED),
@@ -132,6 +160,11 @@ export default function ResponderDashboard({ type }) {
         />
       </div>
 
+      <div className="mb-8">
+      <h3 className="font-semibold text-ink mb-4">Live Emergency Map</h3>
+      <EmergencyMap emergencies={[...openEmergencies, ...activeEmergencies]} />
+      </div>
+
       <h3 className="font-semibold text-ink mb-4">Incoming Requests</h3>
 
       {loading ? (
@@ -164,6 +197,29 @@ export default function ResponderDashboard({ type }) {
           ))}
         </div>
       )}
+
+      {activeEmergencies.length > 0 && (
+  <div className="mt-8">
+    <h3 className="font-semibold text-ink mb-4">Active Missions</h3>
+
+    <div className="space-y-3">
+      {activeEmergencies.map((e) => (
+        <EmergencyCard
+          key={e.id}
+          emergency={e}
+          actions={
+            <button
+              onClick={() => emergencyService.resolveEmergency(e.id).then(loadData)}
+              className="px-3 py-1.5 rounded-lg bg-brand-green text-black text-xs font-semibold hover:bg-[#1dd05f] transition-colors"
+            >
+              ✓ Resolve
+            </button>
+          }
+        />
+      ))}
+    </div>
+  </div>
+)}
     </DashboardLayout>
   )
 }

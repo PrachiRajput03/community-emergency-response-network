@@ -23,6 +23,8 @@ import ProtectedRoute from './routes/ProtectedRoute'
 import RoleRedirect from './routes/RoleRedirect'
 import { ROLES } from './utils/constants'
 
+import DepartmentDetailsPage from './pages/admin/DepartmentDetailsPage'
+
 function App() {
   const { isAuthenticated } = useAuth()
 
@@ -45,6 +47,42 @@ function App() {
 
       <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]}><AdminDashboard /></ProtectedRoute>} />
       <Route path="/admin/emergencies" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]}><AllEmergenciesPage /></ProtectedRoute>} />
+
+      <Route
+  path="/admin/departments/medical"
+  element={
+    <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+      <DepartmentDetailsPage type="medical" />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin/departments/fire"
+  element={
+    <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+      <DepartmentDetailsPage type="fire" />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin/departments/police"
+  element={
+    <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+      <DepartmentDetailsPage type="police" />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin/departments/community"
+  element={
+    <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+      <DepartmentDetailsPage type="community" />
+    </ProtectedRoute>
+  }
+/>
 
       <Route
         path="/emergencies/:id"

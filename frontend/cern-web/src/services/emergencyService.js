@@ -104,6 +104,16 @@ export const getPoliceEmergencies = async () => {
   return response.data
 }
 
+export const getMyActiveMissions = async () => {
+  const response = await api.get('/emergencies/my-active-missions')
+  return response.data
+}
+
+export const getVolunteerEmergencies = async () => {
+  const response = await api.get('/emergencies/volunteer')
+  return response.data
+}
+
 const emergencyService = {
   createEmergency,
   getAllEmergencies,
@@ -117,5 +127,7 @@ const emergencyService = {
   getMedicalEmergencies,
   getFireEmergencies,
   getPoliceEmergencies,
+  getMyActiveMissions,
+  getVolunteerEmergencies,
 }
 export default emergencyService

@@ -1,5 +1,6 @@
 package com.cern.backend.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -17,4 +18,5 @@ public class DashboardStats {
     private long totalCitizens;
     private Map<String, Long> severityCounts;
     private double avgResponseTime;
+    private List<DepartmentStats> departmentStats;
 }

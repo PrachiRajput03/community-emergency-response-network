@@ -120,4 +120,13 @@ public List<Emergency> getPoliceEmergencies() {
 public List<Emergency> getVolunteerEmergencies() {
     return emergencyService.getVolunteerEmergencies();
 }
+
+@GetMapping("/my-active-missions")
+public List<Emergency> getMyActiveMissions(
+        HttpServletRequest request) {
+
+    String email = (String) request.getAttribute("email");
+
+    return emergencyService.getMyActiveMissions(email);
+}
 }
