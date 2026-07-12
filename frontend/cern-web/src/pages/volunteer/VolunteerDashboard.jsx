@@ -43,7 +43,7 @@ export default function VolunteerDashboard() {
   useEffect(() => {
     loadData()
 
-    connectEmergencySocket((newEmergency) => {
+   connectEmergencySocket('community', (emergency) => {
       setNotification(
         `🚨 New Emergency Reported: ${newEmergency.title || 'Emergency'}`
       )

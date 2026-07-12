@@ -24,10 +24,11 @@ export const AuthProvider = ({ children }) => {
 
   const userRole = data.role
 
-  const userInfo = {
+ const userInfo = {
   email: data.email,
   role: data.role,
   name: data.name,
+  phone: data.phone || '',
 }
 
   localStorage.setItem(TOKEN_KEY, jwt)
@@ -55,6 +56,22 @@ export const AuthProvider = ({ children }) => {
     return data
   }, [persistSession])
 
+  const updateCurrentUser = useCallback((updatedUser) => {
+  const userInfo = {
+    ...user,
+    ...updatedUser,
+  }
+
+  localStorage.setItem(
+    USER_KEY,
+    JSON.stringify(userInfo)
+  )
+
+  setUser(userInfo)
+
+  return userInfo
+}, [user])
+
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem(ROLE_KEY)
@@ -65,14 +82,23 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const value = useMemo(() => ({
-    token,
-    role,
-    user,
-    isAuthenticated: !!token,
-    login,
-    register,
-    logout,
-  }), [token, role, user, login, register, logout])
+  token,
+  role,
+  user,
+  isAuthenticated: !!token,
+  login,
+  register,
+  updateCurrentUser,
+  logout,
+}), [
+  token,
+  role,
+  user,
+  login,
+  register,
+  updateCurrentUser,
+  logout,
+])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

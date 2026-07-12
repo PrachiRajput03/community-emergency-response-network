@@ -1,3 +1,7 @@
+import {
+  exportEmergenciesToCSV,
+  exportEmergenciesToPDF,
+} from '../../utils/exportEmergencyReports'
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import DashboardLayout from '../../components/DashboardLayout'
@@ -44,6 +48,7 @@ export default function DepartmentDetailsPage({ type }) {
   const [departmentStats, setDepartmentStats] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const reportTitle = `${config?.title || 'Department'} Emergency Report`
 
   useEffect(() => {
     if (!config) {
@@ -139,12 +144,38 @@ export default function DepartmentDetailsPage({ type }) {
           </div>
         </div>
 
-        <Link
-          to="/admin/dashboard"
-          className="text-xs font-semibold text-brand-red2 hover:underline"
-        >
-          ← Back to Dashboard
-        </Link>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+  <button
+    type="button"
+    onClick={() =>
+      exportEmergenciesToCSV(emergencies, reportTitle)
+    }
+    disabled={emergencies.length === 0}
+    className="inline-flex items-center gap-2 rounded-lg bg-brand-green px-3 py-2 text-xs font-semibold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+  >
+    <span>📥</span>
+    Export CSV
+  </button>
+
+  <button
+    type="button"
+    onClick={() =>
+      exportEmergenciesToPDF(emergencies, reportTitle)
+    }
+    disabled={emergencies.length === 0}
+    className="inline-flex items-center gap-2 rounded-lg bg-brand-red px-3 py-2 text-xs font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+  >
+    <span>📄</span>
+    Export PDF
+  </button>
+
+  <Link
+    to="/admin/dashboard"
+    className="text-xs font-semibold text-brand-red2 hover:underline"
+  >
+    ← Back to Dashboard
+  </Link>
+</div>
       </div>
 
       {error && (

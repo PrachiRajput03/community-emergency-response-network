@@ -5,18 +5,37 @@ import { initials } from '../utils/format'
 
 const NAV_BY_ROLE = {
   [ROLES.CITIZEN]: [
-    { to: '/citizen/dashboard', label: 'Dashboard', icon: '🏠' },
-    { to: '/citizen/create', label: 'Report Emergency', icon: '🆘' },
-    { to: '/citizen/my-emergencies', label: 'My Emergencies', icon: '📋' },
-  ],
-  [ROLES.VOLUNTEER]: [
-    { to: '/volunteer/dashboard', label: 'Dashboard', icon: '🏠' },
-    { to: '/volunteer/assigned', label: 'My Assigned', icon: '🦺' },
-  ],
-  [ROLES.ADMIN]: [
-    { to: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
-    { to: '/admin/emergencies', label: 'All Emergencies', icon: '🚨' },
-  ],
+  { to: '/citizen/dashboard', label: 'Dashboard', icon: '🏠' },
+  { to: '/citizen/create', label: 'Report Emergency', icon: '🆘' },
+  { to: '/citizen/my-emergencies', label: 'My Emergencies', icon: '📋' },
+  { to: '/settings', label: 'Settings', icon: '⚙️' },
+],
+  
+[ROLES.VOLUNTEER]: [
+  { to: '/volunteer/dashboard', label: 'Dashboard', icon: '🏠' },
+  { to: '/volunteer/assigned', label: 'My Assigned', icon: '🦺' },
+  { to: '/settings', label: 'Settings', icon: '⚙️' },
+],
+
+[ROLES.ADMIN]: [
+  { to: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
+  { to: '/admin/emergencies', label: 'All Emergencies', icon: '🚨' },
+  { to: '/settings', label: 'Settings', icon: '⚙️' },
+],
+[ROLES.MEDICAL_RESPONDER]: [
+  { to: '/medical/dashboard', label: 'Dashboard', icon: '🚑' },
+  { to: '/settings', label: 'Settings', icon: '⚙️' },
+],
+
+[ROLES.FIRE_RESPONDER]: [
+  { to: '/fire/dashboard', label: 'Dashboard', icon: '🚒' },
+  { to: '/settings', label: 'Settings', icon: '⚙️' },
+],
+
+[ROLES.POLICE_RESPONDER]: [
+  { to: '/police/dashboard', label: 'Dashboard', icon: '👮' },
+  { to: '/settings', label: 'Settings', icon: '⚙️' },
+],
 }
 
 export default function Sidebar() {

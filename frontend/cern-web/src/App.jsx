@@ -24,6 +24,7 @@ import RoleRedirect from './routes/RoleRedirect'
 import { ROLES } from './utils/constants'
 
 import DepartmentDetailsPage from './pages/admin/DepartmentDetailsPage'
+import SettingsPage from './pages/settings/SettingsPage'
 
 function App() {
   const { isAuthenticated } = useAuth()
@@ -80,6 +81,24 @@ function App() {
   element={
     <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
       <DepartmentDetailsPage type="community" />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/settings"
+  element={
+    <ProtectedRoute
+      allowedRoles={[
+        ROLES.CITIZEN,
+        ROLES.VOLUNTEER,
+        ROLES.MEDICAL_RESPONDER,
+        ROLES.FIRE_RESPONDER,
+        ROLES.POLICE_RESPONDER,
+        ROLES.ADMIN,
+      ]}
+    >
+      <SettingsPage />
     </ProtectedRoute>
   }
 />

@@ -2,6 +2,10 @@ import {
   connectEmergencySocket,
   disconnectEmergencySocket,
 } from '../../services/websocketService'
+import {
+  exportEmergenciesToCSV,
+  exportEmergenciesToPDF,
+} from '../../utils/exportEmergencyReports'
 import { useEffect, useMemo, useState } from 'react'
 import DashboardLayout from '../../components/DashboardLayout'
 import EmergencyCard from '../../components/EmergencyCard'
@@ -35,6 +39,7 @@ const CONFIG = {
 
 export default function ResponderDashboard({ type }) {
   const config = CONFIG[type]
+  const reportTitle = `${config?.title || 'Responder'} Emergency Report`
   const [emergencies, setEmergencies] = useState([])
   const [activeMissions, setActiveMissions] = useState([])
   const [loading, setLoading] = useState(true)
@@ -64,24 +69,13 @@ export default function ResponderDashboard({ type }) {
   }, [type])
 
   useEffect(() => {
-  connectEmergencySocket((emergency) => {
-
-    // Reload only if this responder should see this emergency
-    if (
-      (type === 'medical' &&
-        ['MEDICAL', 'ROAD_ACCIDENT'].includes(emergency.category)) ||
-
-      (type === 'fire' &&
-        emergency.category === 'FIRE') ||
-
-      (type === 'police' &&
-        ['CRIME', 'WOMEN_SAFETY'].includes(emergency.category))
-    ) {
-      loadData()
-    }
+  connectEmergencySocket(type, () => {
+    loadData()
   })
 
-  return () => disconnectEmergencySocket()
+  return () => {
+    disconnectEmergencySocket()
+  }
 }, [type])
 
   const openEmergencies = useMemo(
@@ -116,28 +110,68 @@ export default function ResponderDashboard({ type }) {
       </DashboardLayout>
     )
   }
+  
 
   return (
     <DashboardLayout title={config.title}>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-xl bg-bg3 flex items-center justify-center text-2xl">
-          {config.icon}
-        </div>
-        <div>
-          <h2 className="font-display text-xl font-bold text-ink">
-            {config.title}
-          </h2>
-          <p className="text-sm text-ink2">
-            View and respond to {config.label.toLowerCase()}.
-          </p>
-        </div>
-      </div>
+      
+      <div className="flex items-center justify-between gap-4 mb-6">
+
+  <div className="flex items-center gap-3">
+    <div className="w-12 h-12 rounded-xl bg-bg3 flex items-center justify-center text-2xl">
+      {config.icon}
+    </div>
+
+    <div>
+      <h2 className="font-display text-xl font-bold text-ink">
+        {config.title}
+      </h2>
+
+      <p className="text-sm text-ink2">
+        View and respond to {config.label.toLowerCase()}.
+      </p>
+    </div>
+  </div>
+
+  <div className="flex gap-2">
+
+    <button
+      onClick={() =>
+        exportEmergenciesToCSV(
+          emergencies,
+          `${config.title} Report`
+        )
+      }
+      disabled={emergencies.length === 0}
+      className="px-3 py-2 rounded-lg bg-brand-green text-black text-xs font-semibold hover:opacity-90 disabled:opacity-40"
+    >
+      📥 CSV
+    </button>
+
+    <button
+      onClick={() =>
+        exportEmergenciesToPDF(
+          emergencies,
+          `${config.title} Report`
+        )
+      }
+      disabled={emergencies.length === 0}
+      className="px-3 py-2 rounded-lg bg-brand-red text-white text-xs font-semibold hover:opacity-90 disabled:opacity-40"
+    >
+      📄 PDF
+    </button>
+
+  </div>
+
+</div>
+      
 
       {error && (
         <div className="mb-6">
           <ErrorAlert message={error} />
         </div>
       )}
+      
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
         <StatCard

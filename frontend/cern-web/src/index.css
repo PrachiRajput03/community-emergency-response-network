@@ -2,6 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: light;
+
+  --color-bg: 244 247 251;
+  --color-bg2: 255 255 255;
+  --color-bg3: 238 242 247;
+  --color-bg4: 226 232 240;
+
+  --color-card: 255 255 255;
+  --color-card2: 247 249 252;
+
+  --color-ink: 20 27 42;
+  --color-ink2: 75 85 105;
+  --color-ink3: 124 135 154;
+
+  --color-line: 20 27 42;
+  --color-line2: 20 27 42;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --color-bg: 10 12 16;
+  --color-bg2: 19 23 32;
+  --color-bg3: 26 32 48;
+  --color-bg4: 34 40 64;
+
+  --color-card: 22 28 42;
+  --color-card2: 30 38 56;
+
+  --color-ink: 238 240 246;
+  --color-ink2: 154 160 184;
+  --color-ink3: 90 96 128;
+
+  --color-line: 255 255 255;
+  --color-line2: 255 255 255;
+}
+
 html, body, #root {
   height: 100%;
 }
@@ -28,29 +66,35 @@ body {
 
 @layer components {
   .input-field {
-    @apply w-full px-4 py-3 bg-bg3 border border-line rounded-xl text-ink placeholder-ink3 text-sm
+    @apply w-full px-4 py-3 bg-bg3 border border-line/10 rounded-xl text-ink placeholder-ink3 text-sm
            outline-none transition-colors focus:border-brand-red;
   }
+
   .label-text {
     @apply block text-xs font-medium text-ink2 mb-1.5;
   }
+
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-brand-red text-white
            font-semibold text-sm transition-all hover:bg-[#e02a50] active:scale-[0.98]
            disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
   }
+
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-bg3 text-ink
-           border border-line2 font-semibold text-sm transition-all hover:bg-bg4 active:scale-[0.98]
+           border border-line2/15 font-semibold text-sm transition-all hover:bg-bg4 active:scale-[0.98]
            disabled:opacity-50 disabled:cursor-not-allowed;
   }
+
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-ink2
            font-medium text-sm transition-colors hover:text-ink hover:bg-bg3;
   }
+
   .card {
-    @apply bg-card border border-line rounded-2xl shadow-card;
+    @apply bg-card border border-line/10 rounded-2xl shadow-card;
   }
+
   .badge {
     @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide;
   }

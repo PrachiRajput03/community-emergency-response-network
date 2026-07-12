@@ -1,3 +1,7 @@
+import {
+  connectEmergencySocket,
+  disconnectEmergencySocket,
+} from '../../services/websocketService'
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import {
@@ -14,6 +18,7 @@ import {
   Legend,
 } from 'recharts'
 
+import LiveActivityFeed from '../../components/LiveActivityFeed'
 import DashboardLayout from '../../components/DashboardLayout'
 import StatCard from '../../components/StatCard'
 import ErrorAlert from '../../components/ErrorAlert'
@@ -60,41 +65,84 @@ export default function AdminDashboard() {
   const [emergencies, setEmergencies] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [notification, setNotification] = useState('')
+  const [activities, setActivities] = useState([])
+
+  const loadDashboard = () => {
+  Promise.all([
+    dashboardService.getDashboardStats(),
+    emergencyService.getAllEmergencies(),
+  ])
+    .then(([statsData, emergenciesData]) => {
+      setStats(statsData)
+
+      setEmergencies(
+        Array.isArray(emergenciesData)
+          ? emergenciesData
+          : emergenciesData?.content || []
+      )
+    })
+    .catch((err) => {
+      setError(
+        err.response?.data?.message ||
+        'Failed to load dashboard data.'
+      )
+    })
+    .finally(() => setLoading(false))
+}
 
   useEffect(() => {
-    let mounted = true
+  setLoading(true)
 
-    Promise.all([
-      dashboardService.getDashboardStats(),
-      emergencyService.getAllEmergencies(),
-    ])
-      .then(([statsData, emergenciesData]) => {
-        if (!mounted) return
+  loadDashboard()
 
-        setStats(statsData)
+  connectEmergencySocket('admin', (emergency) => {
+  const status = emergency.status || 'UPDATED'
 
-        setEmergencies(
-          Array.isArray(emergenciesData)
-            ? emergenciesData
-            : emergenciesData?.content || []
-        )
-      })
-      .catch((err) => {
-        if (mounted) {
-          setError(
-            err.response?.data?.message ||
-              'Failed to load dashboard data.'
-          )
-        }
-      })
-      .finally(() => {
-        if (mounted) setLoading(false)
-      })
+  const icon =
+    emergency.category === 'FIRE'
+      ? '🚒'
+      : ['MEDICAL', 'ROAD_ACCIDENT'].includes(emergency.category)
+        ? '🚑'
+        : ['WOMEN_SAFETY', 'CRIME'].includes(emergency.category)
+          ? '👮'
+          : '🦺'
 
-    return () => {
-      mounted = false
-    }
-  }, [])
+  const action =
+    status === 'OPEN'
+      ? 'New emergency reported'
+      : status === 'IN_PROGRESS'
+        ? 'Emergency accepted'
+        : status === 'RESOLVED'
+          ? 'Emergency resolved'
+          : 'Emergency updated'
+
+  const newActivity = {
+    id: `${emergency.id}-${status}-${Date.now()}`,
+    icon,
+    message: `${action}: ${emergency.title || 'Emergency'}`,
+    time: new Date().toISOString(),
+  }
+
+  setActivities((previous) =>
+    [newActivity, ...previous].slice(0, 20)
+  )
+
+  setNotification(
+    `${icon} ${action}: ${emergency.title || 'Emergency'}`
+  )
+
+  loadDashboard()
+
+  setTimeout(() => {
+    setNotification('')
+  }, 10000)
+})
+
+  return () => {
+    disconnectEmergencySocket()
+  }
+}, [])
 
   const totalEmergencies = stats?.totalEmergencies ?? 0
   const openCount = stats?.openEmergencies ?? 0
@@ -134,9 +182,24 @@ export default function AdminDashboard() {
 
   return (
     <DashboardLayout title="Admin Dashboard">
-      <p className="text-sm text-ink2 mb-6 lg:hidden">
-        Live monitoring across the emergency response network
-      </p>
+      {notification && (
+  <div className="mb-6 rounded-xl border border-brand-red/40 bg-brand-red/10 px-4 py-3 flex items-center justify-between">
+    <span className="text-sm text-brand-red2">
+      {notification}
+    </span>
+
+    <button
+      onClick={() => setNotification('')}
+      className="text-xs text-ink3 hover:text-ink"
+    >
+      Dismiss
+    </button>
+  </div>
+)}
+
+<p className="text-sm text-ink2 mb-6 lg:hidden">
+  Live monitoring across the emergency response network
+</p>
 
       {error && (
         <div className="mb-6">
@@ -274,6 +337,10 @@ export default function AdminDashboard() {
             </div>
           </div>
 
+          <div className="mb-8">
+  <LiveActivityFeed activities={activities} />
+</div>
+
           {/* Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <div className="card p-5">
@@ -311,9 +378,16 @@ export default function AdminDashboard() {
                       border: '1px solid rgba(255,255,255,0.1)',
                       borderRadius: 12,
                       fontSize: 12,
+                      color: '#ffffff',
                     }}
-                    labelStyle={{ color: '#eef0f6' }}
-                  />
+                    labelStyle={{
+                      color: '#ffffff',
+                      fontWeight: 600,
+                 }}
+                      itemStyle={{
+                     color: '#ffffff',
+                      }}
+                    />
 
                   <Bar dataKey="value" radius={[6, 6, 0, 0]}>
                     {statusBarData.map((entry, index) => (
@@ -356,12 +430,20 @@ export default function AdminDashboard() {
                     </Pie>
 
                     <Tooltip
-                      contentStyle={{
+                        contentStyle={{
                         background: '#161c2a',
                         border: '1px solid rgba(255,255,255,0.1)',
                         borderRadius: 12,
                         fontSize: 12,
+                        color: '#ffffff',
+                    }}
+                        labelStyle={{
+                          color: '#ffffff',
+                          fontWeight: 600,
                       }}
+                        itemStyle={{
+                            color: '#ffffff',
+                     }}
                     />
 
                     <Legend

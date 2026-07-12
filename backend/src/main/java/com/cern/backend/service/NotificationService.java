@@ -11,10 +11,45 @@ public class NotificationService {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    public void notifyNewEmergency(Emergency emergency) {
-        messagingTemplate.convertAndSend(
-                "/topic/emergencies",
-                emergency
-        );
+    public void notifyEmergencyChanged(Emergency emergency) {
+
+    messagingTemplate.convertAndSend(
+            "/topic/admin",
+            emergency
+    );
+
+    switch (emergency.getCategory()) {
+
+        case MEDICAL:
+        case ROAD_ACCIDENT:
+            messagingTemplate.convertAndSend(
+                    "/topic/medical",
+                    emergency
+            );
+            break;
+
+        case FIRE:
+            messagingTemplate.convertAndSend(
+                    "/topic/fire",
+                    emergency
+            );
+            break;
+
+        case WOMEN_SAFETY:
+        case CRIME:
+            messagingTemplate.convertAndSend(
+                    "/topic/police",
+                    emergency
+            );
+            break;
+
+        case GENERAL_HELP:
+        case NATURAL_DISASTER:
+            messagingTemplate.convertAndSend(
+                    "/topic/community",
+                    emergency
+            );
+            break;
     }
+}
 }

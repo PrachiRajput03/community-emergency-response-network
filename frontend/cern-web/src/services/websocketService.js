@@ -2,17 +2,25 @@ import { Client } from '@stomp/stompjs'
 
 let stompClient = null
 
-export const connectEmergencySocket = (onEmergencyReceived) => {
+export const connectEmergencySocket = (topic, onEmergencyReceived) => {
+  if (stompClient?.active) {
+    stompClient.deactivate()
+  }
+
   stompClient = new Client({
     brokerURL: 'ws://localhost:8080/ws',
     reconnectDelay: 5000,
 
     onConnect: () => {
-      console.log('WebSocket connected')
+      console.log(`WebSocket connected to /topic/${topic}`)
 
-      stompClient.subscribe('/topic/emergencies', (message) => {
-        const emergency = JSON.parse(message.body)
-        onEmergencyReceived(emergency)
+      stompClient.subscribe(`/topic/${topic}`, (message) => {
+        try {
+          const emergency = JSON.parse(message.body)
+          onEmergencyReceived(emergency)
+        } catch (error) {
+          console.error('Failed to parse WebSocket message:', error)
+        }
       })
     },
 
@@ -29,7 +37,9 @@ export const connectEmergencySocket = (onEmergencyReceived) => {
 }
 
 export const disconnectEmergencySocket = () => {
-  if (stompClient) {
+  if (stompClient?.active) {
     stompClient.deactivate()
   }
+
+  stompClient = null
 }

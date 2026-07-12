@@ -48,7 +48,7 @@ public class EmergencyService {
 
         Emergency savedEmergency = emergencyRepository.save(emergency);
 
-        notificationService.notifyNewEmergency(savedEmergency);
+        notificationService.notifyEmergencyChanged(savedEmergency);
 
         return "Emergency created successfully";
     }
@@ -71,7 +71,9 @@ public class EmergencyService {
         emergency.setStatus(EmergencyStatus.IN_PROGRESS);
         emergency.setAcceptedAt(LocalDateTime.now());
 
-        emergencyRepository.save(emergency);
+        Emergency savedEmergency = emergencyRepository.save(emergency);
+
+        notificationService.notifyEmergencyChanged(savedEmergency);
 
         return "Emergency accepted successfully";
     }
@@ -92,7 +94,9 @@ public class EmergencyService {
         emergency.setStatus(EmergencyStatus.RESOLVED);
         emergency.setResolvedAt(LocalDateTime.now());
 
-        emergencyRepository.save(emergency);
+        Emergency savedEmergency = emergencyRepository.save(emergency);
+
+        notificationService.notifyEmergencyChanged(savedEmergency);
 
         return "Emergency resolved successfully";
     }
