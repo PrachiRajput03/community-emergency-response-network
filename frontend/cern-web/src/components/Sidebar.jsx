@@ -1,41 +1,160 @@
 import { NavLink } from 'react-router-dom'
+import {
+  Activity,
+  Ambulance,
+  ClipboardList,
+  FileWarning,
+  Flame,
+  HeartPulse,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  Phone,
+  Settings,
+  Shield,
+  Siren,
+  UserRound,
+  UsersRound,
+} from 'lucide-react'
+
 import { useAuth } from '../context/AuthContext'
 import { ROLES } from '../utils/constants'
 import { initials } from '../utils/format'
 
 const NAV_BY_ROLE = {
   [ROLES.CITIZEN]: [
-  { to: '/citizen/dashboard', label: 'Dashboard', icon: '🏠' },
-  { to: '/citizen/create', label: 'Report Emergency', icon: '🆘' },
-  { to: '/citizen/my-emergencies', label: 'My Emergencies', icon: '📋' },
-  { to: '/settings', label: 'Settings', icon: '⚙️' },
-],
-  
-[ROLES.VOLUNTEER]: [
-  { to: '/volunteer/dashboard', label: 'Dashboard', icon: '🏠' },
-  { to: '/volunteer/assigned', label: 'My Assigned', icon: '🦺' },
-  { to: '/settings', label: 'Settings', icon: '⚙️' },
-],
+    {
+      to: '/citizen/dashboard',
+      label: 'Overview',
+      icon: Home,
+    },
+    {
+      to: '/citizen/create',
+      label: 'Report Emergency',
+      icon: Siren,
+    },
+    {
+      to: '/citizen/my-emergencies',
+      label: 'My Reports',
+      icon: ClipboardList,
+    },
+    {
+      to: '/settings',
+      label: 'Settings',
+      icon: Settings,
+    },
+  ],
 
-[ROLES.ADMIN]: [
-  { to: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
-  { to: '/admin/emergencies', label: 'All Emergencies', icon: '🚨' },
-  { to: '/settings', label: 'Settings', icon: '⚙️' },
-],
-[ROLES.MEDICAL_RESPONDER]: [
-  { to: '/medical/dashboard', label: 'Dashboard', icon: '🚑' },
-  { to: '/settings', label: 'Settings', icon: '⚙️' },
-],
+  [ROLES.VOLUNTEER]: [
+    {
+      to: '/volunteer/dashboard',
+      label: 'Overview',
+      icon: LayoutDashboard,
+    },
+    {
+      to: '/volunteer/assigned',
+      label: 'Assigned Cases',
+      icon: UsersRound,
+    },
+    {
+      to: '/settings',
+      label: 'Settings',
+      icon: Settings,
+    },
+  ],
 
-[ROLES.FIRE_RESPONDER]: [
-  { to: '/fire/dashboard', label: 'Dashboard', icon: '🚒' },
-  { to: '/settings', label: 'Settings', icon: '⚙️' },
-],
+  [ROLES.ADMIN]: [
+    {
+      to: '/admin/dashboard',
+      label: 'Operations',
+      icon: LayoutDashboard,
+    },
+    {
+      to: '/admin/emergencies',
+      label: 'All Emergencies',
+      icon: FileWarning,
+    },
+    {
+      to: '/settings',
+      label: 'Settings',
+      icon: Settings,
+    },
+  ],
 
-[ROLES.POLICE_RESPONDER]: [
-  { to: '/police/dashboard', label: 'Dashboard', icon: '👮' },
-  { to: '/settings', label: 'Settings', icon: '⚙️' },
-],
+  [ROLES.MEDICAL_RESPONDER]: [
+    {
+      to: '/medical/dashboard',
+      label: 'Medical Operations',
+      icon: Ambulance,
+    },
+    {
+      to: '/settings',
+      label: 'Settings',
+      icon: Settings,
+    },
+  ],
+
+  [ROLES.FIRE_RESPONDER]: [
+    {
+      to: '/fire/dashboard',
+      label: 'Fire Operations',
+      icon: Flame,
+    },
+    {
+      to: '/settings',
+      label: 'Settings',
+      icon: Settings,
+    },
+  ],
+
+  [ROLES.POLICE_RESPONDER]: [
+    {
+      to: '/police/dashboard',
+      label: 'Police Operations',
+      icon: Shield,
+    },
+    {
+      to: '/settings',
+      label: 'Settings',
+      icon: Settings,
+    },
+  ],
+}
+
+const HOTLINES = [
+  {
+    label: 'Ambulance',
+    number: '108',
+    icon: Ambulance,
+  },
+  {
+    label: 'National Emergency',
+    number: '112',
+    icon: Shield,
+  },
+  {
+    label: 'Fire Service',
+    number: '101',
+    icon: Flame,
+  },
+  {
+    label: 'Women Helpline',
+    number: '1091',
+    icon: Phone,
+  },
+]
+
+const formatRole = (role) => {
+  if (!role) return 'User'
+
+  return role
+    .toLowerCase()
+    .split('_')
+    .map(
+      (word) =>
+        word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join(' ')
 }
 
 export default function Sidebar() {
@@ -43,131 +162,148 @@ export default function Sidebar() {
   const links = NAV_BY_ROLE[role] || []
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 bg-card border-r border-line px-4 py-6">
-      {/* Logo */}
-      <div className="flex items-center gap-3 px-2 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-red to-brand-orange flex items-center justify-center shadow-glow flex-shrink-0">
-          <span className="text-white font-bold text-lg">✦</span>
+    <aside className="sticky top-0 hidden h-screen w-64 flex-col border-r border-line/10 bg-card px-4 py-5 lg:flex">
+      {/* Brand */}
+      <div className="mb-7 flex items-center gap-3 px-2">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-brand-red/25 bg-brand-red/10">
+          <HeartPulse
+            size={21}
+            strokeWidth={2}
+            className="text-brand-red"
+          />
         </div>
-        <div>
-          <p className="font-display font-bold text-sm tracking-wide">CERN</p>
-          <p className="text-[10px] text-ink3 tracking-wide">Emergency Response</p>
+
+        <div className="min-w-0">
+          <p className="font-display text-sm font-semibold tracking-[0.12em] text-ink">
+            CERN
+          </p>
+
+          <p className="truncate text-[10px] font-medium uppercase tracking-[0.1em] text-ink3">
+            Emergency Response
+          </p>
         </div>
       </div>
 
-      {/* Nav links */}
-      <nav className="flex-1 flex flex-col gap-1">
-        {links.map((link) => (
-          <NavLink
-            key={link.to}
-            to={link.to}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                isActive
-                  ? 'bg-brand-red/15 text-brand-red2'
-                  : 'text-ink2 hover:text-ink hover:bg-bg3'
-              }`
-            }
-          >
-            <span className="text-base">{link.icon}</span>
-            {link.label}
-          </NavLink>
-        ))}
+      {/* Navigation */}
+      <div className="mb-2 px-3">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink3">
+          Navigation
+        </p>
+      </div>
+
+      <nav className="flex flex-1 flex-col gap-1">
+        {links.map((link) => {
+          const Icon = link.icon
+
+          return (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className={({ isActive }) =>
+                [
+                  'group flex items-center gap-3 rounded-lg px-3 py-2.5',
+                  'text-sm font-medium transition-colors',
+                  isActive
+                    ? 'bg-brand-red/10 text-brand-red2'
+                    : 'text-ink2 hover:bg-bg3 hover:text-ink',
+                ].join(' ')
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <Icon
+                    size={17}
+                    strokeWidth={isActive ? 2.2 : 1.8}
+                    className={
+                      isActive
+                        ? 'text-brand-red'
+                        : 'text-ink3 transition-colors group-hover:text-ink2'
+                    }
+                  />
+
+                  <span>{link.label}</span>
+                </>
+              )}
+            </NavLink>
+          )
+        })}
       </nav>
 
-            {/* Emergency Hotlines */}
-      <div className="border-t border-line pt-4 mt-4">
-        <h3 className="text-[11px] uppercase tracking-wider text-ink3 mb-3 px-2">
-          Emergency Hotlines
-        </h3>
+      {/* Hotlines */}
+      <div className="border-t border-line/10 pt-4">
+        <div className="mb-2 flex items-center justify-between px-2">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink3">
+            Emergency Contacts
+          </p>
 
-        <div className="space-y-2 mb-5">
-
-          <a
-            href="tel:108"
-            className="flex items-center justify-between rounded-xl bg-bg3 px-3 py-2 hover:bg-bg2 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <span>🚑</span>
-              <span className="text-sm text-ink">Ambulance</span>
-            </div>
-
-            <span className="font-semibold text-brand-green">
-              108
-            </span>
-          </a>
-
-          <a
-            href="tel:112"
-            className="flex items-center justify-between rounded-xl bg-bg3 px-3 py-2 hover:bg-bg2 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <span>👮</span>
-              <span className="text-sm text-ink">Police</span>
-            </div>
-
-            <span className="font-semibold text-brand-blue">
-              112
-            </span>
-          </a>
-
-          <a
-            href="tel:101"
-            className="flex items-center justify-between rounded-xl bg-bg3 px-3 py-2 hover:bg-bg2 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <span>🚒</span>
-              <span className="text-sm text-ink">Fire</span>
-            </div>
-
-            <span className="font-semibold text-brand-red">
-              101
-            </span>
-          </a>
-
-          <a
-            href="tel:1091"
-            className="flex items-center justify-between rounded-xl bg-bg3 px-3 py-2 hover:bg-bg2 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <span>🆘</span>
-              <span className="text-sm text-ink">
-                Women Helpline
-              </span>
-            </div>
-
-            <span className="font-semibold text-brand-amber">
-              1091
-            </span>
-          </a>
-
+          <Activity
+            size={13}
+            className="text-brand-green"
+          />
         </div>
 
-        {/* User card */}
-        <div className="flex items-center gap-3 px-2 mb-3 border-t border-line pt-4">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-blue to-brand-purple flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
-            {initials(user?.name)}
-          </div>
+        <div className="mb-4 space-y-1">
+          {HOTLINES.map((hotline) => {
+            const Icon = hotline.icon
 
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-ink truncate">
-              {user?.name || 'User'}
-            </p>
+            return (
+              <a
+                key={hotline.number}
+                href={`tel:${hotline.number}`}
+                className="group flex items-center justify-between rounded-lg px-2.5 py-2 transition-colors hover:bg-bg3"
+              >
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <Icon
+                    size={15}
+                    strokeWidth={1.8}
+                    className="flex-shrink-0 text-ink3 transition-colors group-hover:text-ink"
+                  />
 
-            <p className="text-[11px] text-ink3 capitalize">
-              {role?.toLowerCase().replace('_', ' ')}
-            </p>
-          </div>
+                  <span className="truncate text-xs text-ink2 group-hover:text-ink">
+                    {hotline.label}
+                  </span>
+                </div>
+
+                <span className="ml-2 text-xs font-semibold tabular-nums text-ink">
+                  {hotline.number}
+                </span>
+              </a>
+            )
+          })}
         </div>
 
-        <button
-          onClick={logout}
-          className="btn-ghost w-full justify-start px-2"
-        >
-          <span>🚪</span>
-          Sign Out
-        </button>
+        {/* Account */}
+        <div className="border-t border-line/10 pt-4">
+          <div className="mb-3 flex items-center gap-3 px-2">
+            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-line/10 bg-bg3 text-xs font-semibold text-ink">
+              {user?.name ? (
+                initials(user.name)
+              ) : (
+                <UserRound size={16} />
+              )}
             </div>
+
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-ink">
+                {user?.name || 'User'}
+              </p>
+
+              <p className="truncate text-[11px] text-ink3">
+                {formatRole(role)}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={logout}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-ink2 transition-colors hover:bg-brand-red/10 hover:text-brand-red2"
+          >
+            <LogOut size={16} strokeWidth={1.8} />
+            Sign out
+          </button>
+        </div>
+      </div>
     </aside>
   )
 }

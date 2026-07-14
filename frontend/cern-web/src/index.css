@@ -74,23 +74,50 @@ body {
     @apply block text-xs font-medium text-ink2 mb-1.5;
   }
 
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-brand-red text-white
-           font-semibold text-sm transition-all hover:bg-[#e02a50] active:scale-[0.98]
-           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
-  }
+ .btn-primary {
+  @apply inline-flex items-center justify-center gap-2
+         px-5 py-2.5
+         rounded-lg
+         bg-brand-red
+         text-white
+         text-sm
+         font-semibold
+         shadow-sm
+         transition-all
+         duration-200
+         hover:bg-[#e53355]
+         hover:shadow-lg
+         active:scale-[0.98]
+         disabled:opacity-50
+         disabled:cursor-not-allowed;
+}
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-bg3 text-ink
-           border border-line2/15 font-semibold text-sm transition-all hover:bg-bg4 active:scale-[0.98]
-           disabled:opacity-50 disabled:cursor-not-allowed;
-  }
+  @apply inline-flex items-center justify-center gap-2
+         px-5 py-2.5
+         rounded-lg
+         border border-line2
+         bg-bg3
+         text-ink
+         text-sm
+         font-semibold
+         transition-all
+         duration-200
+         hover:bg-bg4;
+}
 
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-ink2
-           font-medium text-sm transition-colors hover:text-ink hover:bg-bg3;
-  }
-
+ .btn-ghost {
+  @apply inline-flex items-center justify-center gap-2
+         rounded-lg
+         px-3 py-2
+         text-sm
+         font-medium
+         text-ink2
+         transition-all
+         duration-200
+         hover:bg-bg3
+         hover:text-ink;
+}
   .card {
     @apply bg-card border border-line/10 rounded-2xl shadow-card;
   }

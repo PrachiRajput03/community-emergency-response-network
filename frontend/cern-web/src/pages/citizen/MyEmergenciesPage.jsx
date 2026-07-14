@@ -1,17 +1,35 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import {
+  ArrowUpRight,
+  FileText,
+  Plus,
+} from 'lucide-react'
+
 import DashboardLayout from '../../components/DashboardLayout'
 import EmergencyCard from '../../components/EmergencyCard'
 import ErrorAlert from '../../components/ErrorAlert'
 import Spinner from '../../components/Spinner'
 import * as emergencyService from '../../services/emergencyService'
-import { EMERGENCY_STATUS, STATUS_META } from '../../utils/constants'
+import {
+  EMERGENCY_STATUS,
+  STATUS_META,
+} from '../../utils/constants'
 
 const FILTERS = [
-  { key: 'ALL', label: 'All' },
-  { key: EMERGENCY_STATUS.OPEN, label: STATUS_META.OPEN.label },
-  { key: EMERGENCY_STATUS.IN_PROGRESS, label: STATUS_META.IN_PROGRESS.label },
-  { key: EMERGENCY_STATUS.RESOLVED, label: STATUS_META.RESOLVED.label },
+  { key: 'ALL', label: 'All Reports' },
+  {
+    key: EMERGENCY_STATUS.OPEN,
+    label: STATUS_META.OPEN.label,
+  },
+  {
+    key: EMERGENCY_STATUS.IN_PROGRESS,
+    label: STATUS_META.IN_PROGRESS.label,
+  },
+  {
+    key: EMERGENCY_STATUS.RESOLVED,
+    label: STATUS_META.RESOLVED.label,
+  },
 ]
 
 export default function MyEmergenciesPage() {
@@ -22,62 +40,170 @@ export default function MyEmergenciesPage() {
 
   useEffect(() => {
     let mounted = true
+
     setLoading(true)
+    setError('')
+
     emergencyService
       .getMyEmergencies()
-      .then((data) => mounted && setEmergencies(Array.isArray(data) ? data : data?.content || []))
-      .catch((err) => mounted && setError(err.response?.data?.message || 'Failed to load emergencies.'))
-      .finally(() => mounted && setLoading(false))
-    return () => { mounted = false }
+      .then((data) => {
+        if (!mounted) return
+
+        setEmergencies(
+          Array.isArray(data)
+            ? data
+            : data?.content || []
+        )
+      })
+      .catch((err) => {
+        if (!mounted) return
+
+        setError(
+          err.response?.data?.message ||
+            'Failed to load emergencies.'
+        )
+      })
+      .finally(() => {
+        if (mounted) setLoading(false)
+      })
+
+    return () => {
+      mounted = false
+    }
   }, [])
 
-  const filtered = useMemo(() => {
+  const filteredEmergencies = useMemo(() => {
     const sorted = [...emergencies].sort(
-      (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+      (first, second) =>
+        new Date(second.createdAt || 0) -
+        new Date(first.createdAt || 0)
     )
-    if (filter === 'ALL') return sorted
-    return sorted.filter((e) => e.status === filter)
+
+    if (filter === 'ALL') {
+      return sorted
+    }
+
+    return sorted.filter(
+      (emergency) => emergency.status === filter
+    )
   }, [emergencies, filter])
 
   return (
     <DashboardLayout title="My Emergencies">
-      <div className="flex items-center justify-between mb-5">
-        <p className="text-sm text-ink2 lg:hidden">All emergencies you've reported</p>
-        <Link to="/citizen/create" className="btn-primary hidden sm:inline-flex ml-auto">
-          <span>🆘</span> Report New
+      {/* Page header */}
+      <section className="mb-7 flex flex-col gap-4 border-b border-line/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink3">
+            Emergency history
+          </p>
+
+          <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-ink">
+            My Reports
+          </h2>
+
+          <p className="mt-2 max-w-xl text-sm leading-6 text-ink2">
+            Review every emergency you have reported and track its current
+            response status.
+          </p>
+        </div>
+
+        <Link
+          to="/citizen/create"
+          className="btn-primary inline-flex w-fit"
+        >
+          <Plus size={17} strokeWidth={2} />
+          Report New Emergency
         </Link>
-      </div>
+      </section>
 
-      {/* Filter chips */}
-      <div className="flex gap-2 overflow-x-auto pb-1 mb-5 -mx-1 px-1">
-        {FILTERS.map((f) => (
-          <button
-            key={f.key}
-            onClick={() => setFilter(f.key)}
-            className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-              filter === f.key
-                ? 'bg-brand-red border-brand-red text-white'
-                : 'bg-card border-line text-ink2 hover:border-line2'
-            }`}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
+      {/* Filters */}
+      <section className="mb-6">
+        <div className="mb-3 flex items-center justify-between gap-4">
+          <div>
+            <h3 className="text-sm font-semibold text-ink">
+              Filter Reports
+            </h3>
 
-      {error && <div className="mb-5"><ErrorAlert message={error} /></div>}
+            <p className="mt-1 text-xs text-ink3">
+              Showing {filteredEmergencies.length} of {emergencies.length}
+            </p>
+          </div>
+        </div>
+
+        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+          {FILTERS.map((filterOption) => (
+            <button
+              key={filterOption.key}
+              type="button"
+              onClick={() => setFilter(filterOption.key)}
+              className={`flex-shrink-0 rounded-lg border px-3.5 py-2 text-xs font-semibold transition-colors ${
+                filter === filterOption.key
+                  ? 'border-brand-red/30 bg-brand-red/10 text-brand-red2'
+                  : 'border-line/10 bg-card text-ink2 hover:border-line2/25 hover:bg-bg3 hover:text-ink'
+              }`}
+            >
+              {filterOption.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {error && (
+        <div className="mb-6">
+          <ErrorAlert message={error} />
+        </div>
+      )}
 
       {loading ? (
-        <div className="flex justify-center py-16"><Spinner size={28} className="text-brand-red" /></div>
-      ) : filtered.length === 0 ? (
-        <div className="card p-10 text-center">
-          <span className="text-3xl block mb-3">📭</span>
-          <p className="text-sm text-ink2">No emergencies found for this filter.</p>
+        <div className="flex justify-center py-16">
+          <Spinner
+            size={28}
+            className="text-brand-red"
+          />
+        </div>
+      ) : filteredEmergencies.length === 0 ? (
+        <div className="card px-6 py-12 text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-bg3">
+            <FileText
+              size={22}
+              strokeWidth={1.8}
+              className="text-ink3"
+            />
+          </div>
+
+          <h3 className="font-display text-base font-semibold text-ink">
+            No reports found
+          </h3>
+
+          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink2">
+            There are no emergency reports matching the selected status.
+          </p>
+
+          {filter !== 'ALL' ? (
+            <button
+              type="button"
+              onClick={() => setFilter('ALL')}
+              className="btn-secondary mt-6"
+            >
+              View All Reports
+            </button>
+          ) : (
+            <Link
+              to="/citizen/create"
+              className="btn-primary mt-6 inline-flex"
+            >
+              <Plus size={17} strokeWidth={2} />
+              Report Your First Emergency
+            </Link>
+          )}
         </div>
       ) : (
         <div className="space-y-3">
-          {filtered.map((e) => (
-            <EmergencyCard key={e.id} emergency={e} />
+          {filteredEmergencies.map((emergency) => (
+            <EmergencyCard
+              key={emergency.id}
+              emergency={emergency}
+            />
           ))}
         </div>
       )}
