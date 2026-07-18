@@ -26,15 +26,20 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(
+    .requestMatchers(
         "/api/v1/auth/**",
         "/swagger-ui/**",
         "/swagger-ui.html",
         "/v3/api-docs/**",
-         "/ws/**"
-).permitAll()
-                    .anyRequest().authenticated()
-            )
+        "/ws/**"
+    ).permitAll()
+
+    .requestMatchers("/api/v1/admin/**")
+    .hasRole("ADMIN")
+
+    .anyRequest()
+    .authenticated()
+)
             .addFilterBefore(
                     jwtAuthenticationFilter,
                     UsernamePasswordAuthenticationFilter.class

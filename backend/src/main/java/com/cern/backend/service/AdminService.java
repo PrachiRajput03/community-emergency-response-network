@@ -1,12 +1,14 @@
 package com.cern.backend.service;
 
 import com.cern.backend.dto.RegisterRequest;
+import com.cern.backend.dto.ResponderResponse;
 import com.cern.backend.entity.User;
 import com.cern.backend.entity.UserRole;
 import com.cern.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,4 +48,25 @@ public class AdminService {
 
         return "Responder created successfully";
     }
+
+    public List<ResponderResponse> getAllResponders() {
+
+    List<UserRole> responderRoles = List.of(
+            UserRole.MEDICAL_RESPONDER,
+            UserRole.FIRE_RESPONDER,
+            UserRole.POLICE_RESPONDER
+    );
+
+    return userRepository
+            .findAllByRoleIn(responderRoles)
+            .stream()
+            .map(user -> new ResponderResponse(
+                    user.getId(),
+                    user.getName(),
+                    user.getEmail(),
+                    user.getPhone(),
+                    user.getRole()
+            ))
+            .toList();
+}
 }

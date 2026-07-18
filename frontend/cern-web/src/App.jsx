@@ -26,6 +26,8 @@ import { ROLES } from './utils/constants'
 import DepartmentDetailsPage from './pages/admin/DepartmentDetailsPage'
 import SettingsPage from './pages/settings/SettingsPage'
 
+import ManageRespondersPage from './pages/admin/ManageRespondersPage'
+
 function App() {
   const { isAuthenticated } = useAuth()
 
@@ -99,6 +101,24 @@ function App() {
       ]}
     >
       <SettingsPage />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+    path="/admin/responders"
+    element={
+        <ProtectedRoute roles={[ROLES.ADMIN]}>
+            <ManageRespondersPage />
+        </ProtectedRoute>
+    }
+/>
+
+<Route
+  path="/admin/responders"
+  element={
+    <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+      <ManageRespondersPage />
     </ProtectedRoute>
   }
 />

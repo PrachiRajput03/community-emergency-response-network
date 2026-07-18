@@ -64,22 +64,27 @@ const NAV_BY_ROLE = {
   ],
 
   [ROLES.ADMIN]: [
-    {
-      to: '/admin/dashboard',
-      label: 'Operations',
-      icon: LayoutDashboard,
-    },
-    {
-      to: '/admin/emergencies',
-      label: 'All Emergencies',
-      icon: FileWarning,
-    },
-    {
-      to: '/settings',
-      label: 'Settings',
-      icon: Settings,
-    },
-  ],
+  {
+    to: '/admin/dashboard',
+    label: 'Operations',
+    icon: LayoutDashboard,
+  },
+  {
+    to: '/admin/emergencies',
+    label: 'All Emergencies',
+    icon: FileWarning,
+  },
+  {
+    to: '/admin/responders',
+    label: 'Manage Responders',
+    icon: UsersRound,
+  },
+  {
+    to: '/settings',
+    label: 'Settings',
+    icon: Settings,
+  },
+],
 
   [ROLES.MEDICAL_RESPONDER]: [
     {
