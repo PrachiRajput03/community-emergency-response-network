@@ -231,6 +231,15 @@ LinkedIn: https://www.linkedin.com/in/prachi-rajput-66250a2ab/
 
 <img width="1896" height="863" alt="image" src="https://github.com/user-attachments/assets/a1f85da3-9468-448f-9ba3-bdec1c0e5edb" />
 
+### Admin
+
+<img width="1920" height="1080" alt="Screenshot 2026-07-20 011257" src="https://github.com/user-attachments/assets/cfe77279-05fe-47aa-861d-42260e744e90" />
+
+<img width="1920" height="1080" alt="Screenshot 2026-07-20 011307" src="https://github.com/user-attachments/assets/4b35fd7a-0ec7-4327-95bb-cdf10215fb17" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ced12fe6-93a6-4c42-abe4-c1313ee949b0" />
+
+
 
 
 ## License
