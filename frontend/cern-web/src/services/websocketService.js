@@ -8,7 +8,9 @@ export const connectEmergencySocket = (topic, onEmergencyReceived) => {
   }
 
   stompClient = new Client({
-    brokerURL: 'ws://localhost:8080/ws',
+    brokerURL: `${import.meta.env.VITE_API_BASE_URL
+  .replace("/api/v1", "")
+  .replace("https://", "wss://")}/ws`,
     reconnectDelay: 5000,
 
     onConnect: () => {
