@@ -54,13 +54,15 @@ public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
 
     configuration.setAllowedOrigins(List.of(
-            "http://localhost:5173"
+            "http://localhost:5173",
+            "https://cern-frontend.onrender.com"
     ));
 
     configuration.setAllowedMethods(List.of(
             "GET",
             "POST",
             "PUT",
+            "PATCH",
             "DELETE",
             "OPTIONS"
     ));
@@ -75,10 +77,7 @@ public CorsConfigurationSource corsConfigurationSource() {
     UrlBasedCorsConfigurationSource source =
             new UrlBasedCorsConfigurationSource();
 
-    source.registerCorsConfiguration(
-            "/**",
-            configuration
-    );
+    source.registerCorsConfiguration("/**", configuration);
 
     return source;
 }
